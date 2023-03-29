@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @State private var selectedOption:TweetFilterViewModel = .tweets
+    @Environment(\.presentationMode) var mode
     @Namespace var animation
     var body: some View {
         VStack(alignment: .leading){
@@ -16,14 +17,7 @@ struct ProfileView: View {
             actionButton
             userButtonInfo
             tweetFilter
-            
-            ScrollView{
-                LazyVStack{
-                    ForEach(0...9, id : \.self){ _ in
-                        TweetsRowView()
-                    }
-                }
-            }
+            tweetsView
             Spacer()
         }
     }
@@ -43,22 +37,21 @@ extension ProfileView{
             Color(.systemBlue).ignoresSafeArea()
             VStack{
                 Button{
-                    
-                }label: {
+                    mode.wrappedValue.dismiss()
+                } label: {
                     Image(systemName: "arrow.left")
                         .resizable()
                         .frame(width: 20, height: 16)
                         .foregroundColor(.white)
-                        .offset(x:30, y:-70)
+                        .offset(x:16, y:12)
                 }
-            }
             Circle()
                 .frame(width: 72, height: 72)
                 .offset(x:16, y:24)
-            
-        }.frame(height:96)
-        
-    }
+        }
+    }.frame(height:96)
+}
+
     
     var actionButton: some View{
         HStack(spacing: 12){
@@ -110,20 +103,7 @@ extension ProfileView{
             }
             .foregroundColor(.gray)
             .font(.caption)
-            HStack(spacing: 32){
-                HStack{
-                    Text("200").bold()
-                    Text("Following")
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                }
-                HStack{
-                    Text("400").bold()
-                    Text("Followers")
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                }
-            }
+            UserStatsView()
             .padding(.vertical)
         }
         .padding(.horizontal)
@@ -157,5 +137,15 @@ extension ProfileView{
                 
             }
         }.overlay(Divider().offset(y:15))
+    }
+    
+    var tweetsView: some View{
+        ScrollView{
+            LazyVStack{
+                ForEach(0...9, id : \.self){ _ in
+                    TweetsRowView()
+                }
+            }
+        }
     }
 }
